@@ -126,7 +126,18 @@ example {t : ℚ} (ht : t ^ 2 - 4 = 0) :
   sorry
 
 example {x y : ℝ} (h1 : x + 3 = 5) (h2 : 2 * x - y * x = 0) : y = 2 :=
-  sorry
+  have h3 : x = 2 := by addarith[h1]
+  calc
+    y = 0 + y := by ring
+    _ = 0 * x + y := by ring
+    _ = (0  + y * 2)/2 := by ring
+    _ = (0  + y * x)/x := by rw[h3]
+    _ = ((2 * x - y * x) + y * x)/x := by rw[h2]
+    _ = (2 * x - y * x + y * x)/x := by ring
+    _ = (2 * x)/x := by ring
+    _ = (2 * 2)/2 := by rw[h3]
+    _ = 2 := by numbers
+
 
 example {p q r : ℚ} (h1 : p + q + r = 0) (h2 : p * q + p * r + q * r = 2) :
     p ^ 2 + q ^ 2 + r ^ 2 = -4 :=
