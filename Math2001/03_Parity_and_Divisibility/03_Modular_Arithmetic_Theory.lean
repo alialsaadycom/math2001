@@ -94,21 +94,42 @@ example {a b : ℤ} (ha : a ≡ 2 [ZMOD 4]) :
 
 
 example : 34 ≡ 104 [ZMOD 5] := by
-  sorry
+  use -14
+  numbers
 
 theorem Int.ModEq.symm (h : a ≡ b [ZMOD n]) : b ≡ a [ZMOD n] := by
-  sorry
+  obtain ⟨x, hx⟩ := h
+  use -x
+  calc
+    b - a = -(a - b) := by ring
+    _ = -(n * x) := by rw[hx]
+    _ = n * (- x) := by ring
+
 
 theorem Int.ModEq.trans (h1 : a ≡ b [ZMOD n]) (h2 : b ≡ c [ZMOD n]) :
     a ≡ c [ZMOD n] := by
-  sorry
+  obtain ⟨x, hx⟩ := h1
+  obtain ⟨y, hy⟩ := h2
+  use x + y
+  calc
+    a - c = (a - b) + (b - c) := by ring
+    _ = n * x + n * y := by rw[hx,hy]
+    _ = n * (x + y) := by ring
 
 example : a + n * c ≡ a [ZMOD n] := by
-  sorry
+  use c
+  calc
+    a + n * c - a = n * c := by ring
+
 
 
 example {a b : ℤ} (h : a ≡ b [ZMOD 5]) : 2 * a + 3 ≡ 2 * b + 3 [ZMOD 5] := by
-  sorry
+
+  apply Int.ModEq.add
+  apply Int.ModEq.mul
+  apply Int.ModEq.refl
+  apply h
+  apply Int.ModEq.refl
 
 example {m n : ℤ} (h : m ≡ n [ZMOD 4]) : 3 * m - 1 ≡ 3 * n - 1 [ZMOD 4] := by
   sorry
