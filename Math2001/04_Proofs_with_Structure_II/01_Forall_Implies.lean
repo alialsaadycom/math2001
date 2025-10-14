@@ -132,7 +132,7 @@ example {n : ℤ} (hn : ∀ m, 1 ≤ m → m ≤ 5 → m ∣ n) : 15 ∣ n := by
 example : ∃ n : ℕ, ∀ m : ℕ, n ≤ m := by
   use 1
   intro m
-  apply le_antisymm
+  sorry
 
 
 example : ∃ a : ℝ, ∀ b : ℝ, ∃ c : ℝ, a + b < c := by

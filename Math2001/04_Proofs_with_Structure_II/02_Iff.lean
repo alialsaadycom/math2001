@@ -65,24 +65,69 @@ theorem even_iff_modEq (n : ℤ) : Even n ↔ n ≡ 0 [ZMOD 2] := by
     addarith[hk]
 
 example {x : ℝ} : x ^ 2 + x - 6 = 0 ↔ x = -3 ∨ x = 2 := by
-  sorry
+  constructor
+  . intro h1
+    have h1 :=
+      calc
+      (x + 3)* (x - 2)  = x^2 + x - 6 := by ring
+      _ = 0 := by rel[h1]
+    have h1a := eq_zero_or_eq_zero_of_mul_eq_zero h1
+    obtain h1aa | h1ab := h1a
+    left
+    addarith[h1aa]
+    right
+    addarith[h1ab]
+  . intro h2
+    obtain h2a | h2b := h2
+    calc
+      x ^ 2 + x - 6 = (-3) ^ 2 + (-3) - 6 := by rw[h2a]
+      _ = 0 := by numbers
+    calc
+      x ^ 2 + x - 6 = (2) ^ 2 + (2) - 6 := by rw[h2b]
+      _ = 0 := by numbers
+
+
+
 
 example {a : ℤ} : a ^ 2 - 5 * a + 5 ≤ -1 ↔ a = 2 ∨ a = 3 := by
-  sorry
+  constructor
+  . intro h1
+    have h1a :=
+      calc
+      (2 * a - 5) ^ 2 = 4 * (a ^ 2 - 5 * a + 5) + 5 := by ring
+      _ ≤ 4 * ( - 1) + 5 := by rel[h1]
+      _ = 1 ^ 2 := by numbers
+    cancel 2 at h1a
+    have h1b :=
+      calc
+      (2 * a - 5) ^ 2 ≥ (-1) ^ 2 := by sorry
+    -- figure out later how to prove that (2 * a - 5) ≥ -1
+
 
 example {n : ℤ} (hn : n ^ 2 - 10 * n + 24 = 0) : Even n := by
   have hn1 :=
     calc (n - 4) * (n - 6) = n ^ 2 - 10 * n + 24 := by ring
       _ = 0 := hn
   have hn2 := eq_zero_or_eq_zero_of_mul_eq_zero hn1
-  sorry
+  dsimp [Even]
+  obtain hn2a | hn2b := hn2
+  . use 2
+    addarith[hn2a]
+  . use 3
+    addarith[hn2b]
+
 
 example {n : ℤ} (hn : n ^ 2 - 10 * n + 24 = 0) : Even n := by
   have hn1 :=
     calc (n - 4) * (n - 6) = n ^ 2 - 10 * n + 24 := by ring
       _ = 0 := hn
   rw [mul_eq_zero] at hn1 -- `hn1 : n - 4 = 0 ∨ n - 6 = 0`
-  sorry
+  dsimp [Even]
+  obtain hn1a | hn1b := hn1
+  . use 2
+    addarith[hn1a]
+  . use 3
+    addarith[hn1b]
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
   rw [Int.odd_iff_modEq] at *
@@ -96,16 +141,57 @@ example (n : ℤ) : Even n ∨ Odd n := by
   · left
     rw [Int.even_iff_modEq]
     apply hn
-  · sorry
+  · right
+    rw [Int.odd_iff_modEq]
+    apply hn
 
 /-! # Exercises -/
 
 
 example {x : ℝ} : 2 * x - 1 = 11 ↔ x = 6 := by
-  sorry
+  constructor
+  . intro h1
+    calc
+      x = ((2 * x - 1) + 1)/2 := by ring
+      _ = (11 + 1)/2 := by rw[h1]
+      _ = 6 := by numbers
+  . intro h2
+    calc
+      2 * x - 1 = 2 * 6 - 1 := by rw[h2]
+      _ = 11 := by numbers
+
 
 example {n : ℤ} : 63 ∣ n ↔ 7 ∣ n ∧ 9 ∣ n := by
-  sorry
+  constructor
+  . intro h1
+    obtain ⟨h1c, h1a⟩ := h1
+    . constructor
+      . use 8 * 9 * h1c - n
+        calc
+          n = 8 * (n) - (7 * n) := by ring
+          _ = 8 * (63 * h1c) - (7 * n) := by rw[h1a]
+          _ = 8 * 63 * h1c - 7 * n := by ring
+          _ = 7 * (8 * 9 * h1c - n) := by ring
+      . use (10 * 7 * h1c - n)
+        calc
+          n = 10 * (n) - 9 * n := by ring
+          _ = 10 * (63 * h1c) - 9 * n := by rw[h1a]
+          _ = 9 * (10 * 7 * h1c - n) := by ring
+  . intro h2
+    obtain ⟨h2aa, h2ab⟩ := h2
+    obtain ⟨h2aac, h2aaa⟩ := h2aa
+    obtain ⟨h2abc, h2aba⟩ := h2ab
+    use 4 * h2aac - 5 * h2abc
+    calc
+      n = 36 * (n) - 35 * (n) := by ring
+      _ = 36 * (7 * h2aac) - 35 * n := by  rw[h2aaa]
+      _ = 36 * (7 * h2aac) - 35 * (9 * h2abc) := by rw[h2aba]
+      _ = 4 * 9 * 7 * h2aac - 5 * 7 * 9 * h2abc := by ring
+      _ = 4 * 63 * h2aac - 5 * 63 * h2abc := by ring
+      _ = 63 * (4 * h2aac - 5 * h2abc) := by ring
+
+
+
 
 theorem dvd_iff_modEq {a n : ℤ} : n ∣ a ↔ a ≡ 0 [ZMOD n] := by
   sorry
