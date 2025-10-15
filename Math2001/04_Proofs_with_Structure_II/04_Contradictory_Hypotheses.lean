@@ -65,7 +65,24 @@ example {p : ℕ} (hp : 2 ≤ p) (H : ∀ m : ℕ, 1 < m → m < p → ¬m ∣ p
     left
     addarith [hm]
   -- the case `1 < m`
-  sorry
+  have h2 : m ≤ p := Nat.le_of_dvd hp' hmp
+  obtain h2m | h2m_left : m = p ∨ m < p := eq_or_lt_of_le h2
+  . --the case `m = p`
+    right
+    apply h2m
+  . --the case `m < p`
+
+    sorry -- how do I do this???
+
+
+
+
+
+
+
+
+
+
 
 example : Prime 5 := by
   apply prime_test
@@ -83,7 +100,17 @@ example : Prime 5 := by
 
 example {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
     (h_pyth : a ^ 2 + b ^ 2 = c ^ 2) : 3 ≤ a := by
-  sorry
+  have hcases : a ≤ 2 ∨ a ≥ 3 := le_or_succ_le a 2
+  obtain hcase1 | hcase2 := hcases
+  . have bcases : b ≤ 1 ∨ b ≥ 2 := le_or_succ_le b 1
+    interval_cases a
+    obtain bcase1 | bcase2 := bcases
+    . interval_cases b
+      sorry
+
+
+
+  . apply hcase2
 
 /-! # Exercises -/
 
@@ -110,3 +137,66 @@ namespace Nat
 
 example (p : ℕ) (h : Prime p) : p = 2 ∨ Odd p := by
   sorry
+
+example {n : ℕ} : n ≥ 2 → (∃ p, n = p ^ 2) → ¬ Prime n := by
+intro q r
+obtain ⟨s, u⟩ := r
+have h1 : s > 1 := by
+  have :=
+    calc
+      s ^ 2 = n := by addarith [u]
+      _ > 1 := by addarith [q]
+      _ = 1 ^ 2 := by numbers
+  cancel 2 at this
+apply not_prime s s
+. exact Nat.ne_of_gt h1
+. apply Nat.ne_of_lt
+  rw [u]
+  obtain t | t := le_or_gt s 1
+  . interval_cases s
+  . calc
+      _ = s * 1 := by ring
+      _ < s * s := by rel [t]
+      _ = _ := by ring
+. rw [u]
+  ring
+
+  example : ¬ (∃ p : ℕ, p > 2 ∧ p ^ 2 ∣ 15) := by
+  intro h
+  obtain ⟨n, hnl, hnr⟩ := h
+  have h1 : n < 4 := by
+    have h2 : n ^ 2 < 4 ^ 2 :=
+      calc
+        n ^ 2 ≤ 15 := by apply Nat.le_of_dvd
+                         . numbers
+                         . exact hnr
+        _ < 4 ^ 2 := by numbers
+    cancel 2 at h2
+  interval_cases n
+  obtain ⟨k, hk⟩ := hnr
+  obtain h1 | h2 := le_or_succ_le k 1
+  · have h :=
+    calc 15 = 3 ^ 2 * k := hk
+      _ ≤ 3 ^ 2 * 1 := by rel[h1]
+    numbers at h
+  · have h :=
+    calc 15 = 3 ^ 2 * k := hk
+      _ ≥ 3 ^ 2 * 2 := by rel[h2]
+    numbers at h
+
+example : ∃! a : ℕ, a ^ 2 + a = 2 := by
+  use 1
+  dsimp
+  constructor
+  . numbers
+  intro a ha
+    obtain h | h := le_or_gt a 1
+      interval_cases a
+      . numbers at ha
+      . numbers
+  . have :=
+      calc
+        a ^ 2 + a > 1 ^ 2 + 1 := by rel [h]
+        _ = 2 := by numbers
+    -- missing line 4
+    -- missing line 5
