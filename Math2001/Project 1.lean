@@ -4,23 +4,6 @@ import Library.Basic
 math2001_init
 
 
-lemma ge_of_two_pow_sub_one : ∀ M : ℕ, (2 ^ (M + 2) - 1 : ℤ)> 1 := by
-
-  intro M
-
-
-  --- split this into a lemma
-  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) (by exact Nat.zero_le M)
-  zify at hM4
-
-  calc
-  (2 : ℤ) ^ (M + 2) - 1 = 2 ^ (M + 2) - 1 := by ring
-  _ = 2 ^ M * 2 ^ 2 - 1 := by ring
-  _ = 2 ^ M * 4 - 1 := by ring
-  _ ≥ 2 ^ 0 * 4 - 1 := by rel[hM4]
-  _ = 4 - 1 := by numbers
-  _ > 1 := by numbers
-
 theorem C.Q1 : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2^n - 1) := by
   zify
   intro M
@@ -37,8 +20,17 @@ theorem C.Q1 : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2^n - 1) := by
   have hM3 : 2 ^ (0 + 2) ≤ 2 ^ (M + 2) := Nat.pow_le_pow_of_le_right (by numbers) hM2 -- used "apply?" to get this
   zify at hM3
 
+  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) (by exact Nat.zero_le M)
+  zify at hM4
+
   have hf :=
-    ge_of_two_pow_sub_one M
+      calc
+      (2 : ℤ) ^ (M + 2) - 1 = 2 ^ (M + 2) - 1 := by ring
+      _ = 2 ^ M * 2 ^ 2 - 1 := by ring
+      _ = 2 ^ M * 4 - 1 := by ring
+      _ ≥ 2 ^ 0 * 4 - 1 := by rel[hM4]
+      _ = 4 - 1 := by numbers
+      _ > 1 := by numbers
 
   constructor
   . calc
