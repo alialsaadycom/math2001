@@ -10,17 +10,17 @@ theorem C.Q1 : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2^n - 1) := by
   dsimp[Prime]
   zify
   push_neg
+
   use 2 * M + 4
 
   have hM := Nat.zero_le M
 
-  have hM2:
-  M + 2 ≥ 0 + 2 := by rel[hM]
+  have hM2: M + 2 ≥ 0 + 2 := by rel[hM]
 
-  have hM3 : 2 ^ (0 + 2) ≤ 2 ^ (M + 2) := Nat.pow_le_pow_of_le_right (by numbers) hM2 -- used "apply?" to get this
+  have hM3 : 2 ^ (0 + 2) ≤ 2 ^ (M + 2) := Nat.pow_le_pow_of_le_right (by numbers) hM2 -- ChatGPT provided this
   zify at hM3
 
-  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) (by exact Nat.zero_le M)
+  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) hM
   zify at hM4
 
   have hf :=
