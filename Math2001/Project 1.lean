@@ -3,33 +3,43 @@ import Library.Basic
 
 math2001_init
 
-example : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2^n - 1) := by
+
+lemma ge_of_two_pow_sub_one : ∀ M : ℕ, (2 ^ (M + 2) - 1 : ℤ)> 1 := by
+
+  intro M
+
+
+  --- split this into a lemma
+  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) (by exact Nat.zero_le M)
+  zify at hM4
+
+  calc
+  (2 : ℤ) ^ (M + 2) - 1 = 2 ^ (M + 2) - 1 := by ring
+  _ = 2 ^ M * 2 ^ 2 - 1 := by ring
+  _ = 2 ^ M * 4 - 1 := by ring
+  _ ≥ 2 ^ 0 * 4 - 1 := by rel[hM4]
+  _ = 4 - 1 := by numbers
+  _ > 1 := by numbers
+
+theorem C.Q1 : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2^n - 1) := by
   zify
   intro M
   dsimp[Prime]
   zify
   push_neg
   use 2 * M + 4
-  have hM:
-  M ≥ 0 := Nat.zero_le M -- ChatGPT
+
+  have hM := Nat.zero_le M
 
   have hM2:
-    M + 2 ≥ 0 + 2 := by rel[hM]
+  M + 2 ≥ 0 + 2 := by rel[hM]
 
   have hM3 : 2 ^ (0 + 2) ≤ 2 ^ (M + 2) := Nat.pow_le_pow_of_le_right (by numbers) hM2 -- used "apply?" to get this
   zify at hM3
 
-  have hM4 : 2 ^ (M) ≥ 2 ^ 0 := by refine Nat.pow_le_pow_of_le_right (by numbers) hM
-  zify at hM4
-
   have hf :=
-    calc
-      (2 : ℤ) ^ (M + 2) - 1 = 2 ^ (M + 2) - 1 := by ring
-      _ = 2 ^ M * 2 ^ 2 - 1 := by ring
-      _ = 2 ^ M * 4 - 1 := by ring
-      _ ≥ 2 ^ 0 * 4 - 1 := by rel[hM4]
-      _ = 4 - 1 := by numbers
-      _ > 1 := by numbers
+    ge_of_two_pow_sub_one M
+
   constructor
   . calc
     (2 * M + 4 :ℤ) = M + M + 4 := by ring
