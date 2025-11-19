@@ -57,38 +57,3 @@ theorem C.Q1 : ∀ M : ℕ, ∃ n : ℕ, n > M ∧ ¬ Prime (2 ^ n - 1) := by
               _ = 2 ^ (M + 2) + 12 - 1 := by ring
               _ > 2 ^ (M + 2) - 1 := by extra
           simpa using lt_n -- prove that the factor does not equal 2^n - 1
-
-example (P : Prop) : ¬¬P → P := by
-  intro h
-  obtain hP | hnP := em P
-  . exact hP
-  . apply False.elim
-    apply h
-    exact hnP
-
-example (P Q : α → Prop) : (∃ x, (P x → Q x)) ↔ ¬ (∀ x, (P x ∧ ¬ Q x)) := by
-  constructor
-  . intro h
-    obtain ⟨a, ha⟩ := h 
-    intro h'
-    obtain ⟨hp, hq⟩ := h' a 
-    obtain hqa := ha hp
-    contradiction
-  . intro h
-    push_neg at h
-    obtain ⟨ a, ha ⟩ := h
-    use a
-    obtain h' | h' := ha
-    . intro hpa
-      contradiction
-    . intro hpa
-      exact h'
-  
- example (P Q :Prop) : ((P → Q) → P) → P := by
-  intro h
-  obtain hP | hnP := em P
-  exact hP
-  apply h
-  intro hP
-  apply False.elim
-  exact hnP hP

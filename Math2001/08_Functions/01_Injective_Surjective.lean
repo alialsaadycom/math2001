@@ -169,7 +169,7 @@ example : Injective (fun (x:ℝ) ↦ x ^ 3) := by
 
 
 example : Injective (fun (x : ℚ) ↦ x - 12) := by
-  sorry
+  dsimp [Injective]
 
 example : ¬ Injective (fun (x : ℚ) ↦ x - 12) := by
   sorry
