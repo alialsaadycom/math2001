@@ -82,37 +82,102 @@ example (P : α → Prop) : ¬ (∃ x, P x) ↔ ∀ x, ¬ P x := by
 
 
 example {P Q : Prop} (h : P ∧ Q) : P ∨ Q := by
-  sorry
+  obtain ⟨hP, hQ⟩ := h
+  . left
+    apply hP
 
 example {P Q R : Prop} (h1 : P → Q) (h2 : P → R) (h3 : P) : Q ∧ R := by
-  sorry
+  constructor
+  . apply h1 h3
+  . apply h2 h3
+
 
 example (P : Prop) : ¬(P ∧ ¬ P) := by
-  sorry
+  push_neg
+  apply by_contradiction
+  push_neg
+  intro h1
+  obtain ⟨hP, hF⟩ := h1
+  contradiction
 
 example {P Q : Prop} (h1 : P ↔ ¬ Q) (h2 : Q) : ¬ P := by
-  sorry
+  contrapose h1
+  push_neg
+  left
+  . constructor
+    . apply by_contradiction
+      apply h1
+    . apply h2
 
 example {P Q : Prop} (h1 : P ∨ Q) (h2 : Q → P) : P := by
-  sorry
+  cases h1 with
+  | inl h => apply h
+  | inr h => apply h2 h
 
 example {P Q R : Prop} (h : P ↔ Q) : (P ∧ R) ↔ (Q ∧ R) := by
-  sorry
+  obtain ⟨hB1, hB2⟩ := h
+  . constructor
+    . intro a
+      obtain ⟨hP, hR⟩ := a
+      constructor
+      apply hB1 hP
+      apply hR
+    . intro b
+      obtain ⟨hQ, hR⟩ := b
+      constructor
+      apply hB2 hQ
+      apply hR
+
 
 example (P : Prop) : (P ∧ P) ↔ P := by
-  sorry
+. constructor
+  . intro a
+    obtain ⟨hP, hP2⟩ := a
+    apply hP
+  . intro b
+    constructor; apply b; apply b
+
 
 example (P Q : Prop) : (P ∨ Q) ↔ (Q ∨ P) := by
-  sorry
+  . constructor
+    . intro a
+      sorry
 
 example (P Q : Prop) : ¬(P ∨ Q) ↔ (¬P ∧ ¬Q) := by
   sorry
 
 example {P Q : α → Prop} (h1 : ∀ x, P x → Q x) (h2 : ∀ x, P x) : ∀ x, Q x := by
-  sorry
+  intro x
+  contrapose h1
+  push_neg
+  use x
+  constructor
+  apply h2
+  apply h1
+
 
 example {P Q : α → Prop} (h : ∀ x, P x ↔ Q x) : (∃ x, P x) ↔ (∃ x, Q x) := by
-  sorry
+  contrapose h
+  push_neg
+  push_neg at h
+  push_neg at h
+  obtain h1 | h2 := h
+  obtain ⟨h1a, h1b⟩ := h1
+  obtain ⟨x, hx⟩ := h1a
+  use x
+  left
+  . constructor
+    apply hx
+    apply h1b
+  obtain ⟨h2a, h2b⟩ := h2
+  obtain ⟨x, hx⟩ := h2b
+  use x
+  right
+  . constructor
+    apply h2a
+    apply hx
+
+
 
 example (P : α → β → Prop) : (∃ x y, P x y) ↔ ∃ y x, P x y := by
   sorry
@@ -121,4 +186,15 @@ example (P : α → β → Prop) : (∀ x y, P x y) ↔ ∀ y x, P x y := by
   sorry
 
 example (P : α → Prop) (Q : Prop) : ((∃ x, P x) ∧ Q) ↔ ∃ x, (P x ∧ Q) := by
-  sorry
+  . constructor
+    . intro y
+      obtain ⟨hp, hq⟩ := y
+      obtain ⟨x, hpx⟩ := hp
+      use x
+      constructor; apply hpx; apply hq;
+    . intro a
+      obtain ⟨x, ⟨hp, hq⟩⟩ := a
+      constructor
+      use x
+      apply hp
+      apply hq

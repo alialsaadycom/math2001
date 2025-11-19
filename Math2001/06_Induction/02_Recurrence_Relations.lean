@@ -109,7 +109,24 @@ def c : ℕ → ℤ
   | n + 1 => 3 * c n - 10
 
 example (n : ℕ) : Odd (c n) := by
-  sorry
+  simple_induction n with k IH
+  .
+    dsimp[Odd]
+    use 3
+    rw[c]
+    numbers
+  .
+    dsimp[Odd]
+    obtain ⟨x, hk⟩ := IH
+    use 3 * x - 4
+    calc
+    c (k + 1) = 3 * c k - 10 := by rw[c]
+    _ = 3 * (2 * x + 1) - 10 := by rw[hk]
+    _ = 3 * 2 * x + 3 - 10 := by ring
+    _ = 6 * x + 3 - 10 := by ring
+    _ = 6 * x - 8 + 1 := by ring
+    _ = 2 * (3 * x - 4) + 1 := by ring
+
 
 example (n : ℕ) : c n = 2 * 3 ^ n + 5 := by
   sorry
