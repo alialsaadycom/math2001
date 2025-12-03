@@ -125,30 +125,45 @@ example : {1, 3, 6} ⊆ {t : ℚ | t < 10} := by
 /-! # Exercises -/
 
 
-example : 4 ∈ {a : ℚ | a < 3} := by
-  sorry
+-- example : 4 ∈ {a : ℚ | a < 3} := by
+--   sorry
 
 example : 4 ∉ {a : ℚ | a < 3} := by
-  sorry
+  dsimp
+  numbers
 
 example : 6 ∈ {n : ℕ | n ∣ 42} := by
-  sorry
+  dsimp
+  use 7
+  numbers
 
-example : 6 ∉ {n : ℕ | n ∣ 42} := by
-  sorry
+-- example : 6 ∉ {n : ℕ | n ∣ 42} := by
+--   sorry
 
 
-example : 8 ∈ {k : ℤ | 5 ∣ k} := by
-  sorry
+
+
+
+-- example : 8 ∈ {k : ℤ | 5 ∣ k} := by
+--   sorry
 
 example : 8 ∉ {k : ℤ | 5 ∣ k} := by
-  sorry
+  dsimp
+  apply Int.not_dvd_of_exists_lt_and_lt
+  use 1
+  constructor
+  . numbers
+  . numbers
 
+
+namespace Nat
 example : 11 ∈ {n : ℕ | Odd n} := by
-  sorry
+  dsimp
+  use 5
+  numbers
 
-example : 11 ∉ {n : ℕ | Odd n} := by
-  sorry
+-- example : 11 ∉ {n : ℕ | Odd n} := by
+--   sorry
 
 
 example : -3 ∈ {x : ℝ | ∀ y : ℝ, x ≤ y ^ 2} := by
@@ -220,3 +235,23 @@ example : {1, 2, 3} ≠ {1, 2} := by
 
 example : {x : ℝ | x ^ 2 + 3 * x + 2 = 0} = {-1, -2} := by
   sorry
+
+-- quiz
+
+example : {p : ℕ | Prime p} ⊆ {s : ℕ | 1 < s} := by
+  dsimp [Set.subset_def, Prime]
+  intro p hp
+  obtain ⟨h1, h2⟩ := hp
+  addarith [h1]
+
+example : {t : ℤ | t ^ 2 - 4 * t + 3 ≤ 0} ≠ {1,2} := by
+  ext
+  dsimp
+  push_neg
+  use 3
+  left
+  constructor
+  . numbers
+  . constructor <;> numbers
+
+example : {1,2,3} ∈ {s : Set ℕ | Prime s} := by

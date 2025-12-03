@@ -44,6 +44,17 @@ example : Bijective (fun ((m, n) : ℤ × ℤ) ↦ (m + n, m + 2 * n)) := by
     ring
 
 
+example : Bijective (fun (x : ℤ) ↦ 1800 - x) := by
+  constructor
+  . dsimp [Injective]
+    intro a b hab
+    rw [← sub_right_inj]
+    exact hab
+  . dsimp [Surjective]
+    intro r
+    use 1800 - r
+    ring
+
 example : Bijective (fun ((m, n) : ℝ × ℝ) ↦ (m + n, m - n)) := by
   sorry
 

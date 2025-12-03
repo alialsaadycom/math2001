@@ -14,6 +14,8 @@ example : Reflexive ((·:ℕ) ∣ ·) := by
   ring
 
 
+
+
 example : ¬ Symmetric ((·:ℕ) ∣ ·) := by
   dsimp [Symmetric]
   push_neg
