@@ -34,19 +34,28 @@ theorem A.Q2 (n : ℕ) : ∑ i in Finset.range (n + 1), (2 * i) ^ 2 = (2 * n + 2
     have succ_zero_eq_one : Nat.succ 0 = 1 := by rfl
     have succ_eq_plus_one (n : ℕ) : Nat.succ n = n + 1 := by rfl
 
-
+    --left side
     rw [show Nat.succ 0 = 1 by rfl]
     rw[show Nat.succ k = k + 1 by rfl]
     rw [show Nat.succ (k + 1) = k + 2 by rfl]
     rw [Nat.choose_eq_descFactorial_div_factorial]
     rw [show Nat.factorial 3 = 6 by rfl]
     dsimp [Nat.descFactorial]
-
     rw [show (2 * (k + 1 + 1)) ^ 2 = 4 * (k + 2) ^ 2 by ring]
     rw [Nat.add_sub_cancel]
     rw [@add_sq]
     rw [Nat.add_succ_sub_one]
-    rw?
+
+    --right side
+    rw [Nat.choose_eq_descFactorial_div_factorial]
+    rw [show Nat.factorial 3 = 6 by rfl]
+    dsimp [Nat.descFactorial]
+
+    rw [Nat.mul_one]
+    rw [Nat.mul_one]
+    rw [Nat.add_sub_cancel]
+    rw [Nat.add_succ_sub_one]
+
 
 
     -- rw [show Nat.factorial (2 * (k + 1) + 2 - 3) = Nat.factorial (2 * k + 1) by rfl]
