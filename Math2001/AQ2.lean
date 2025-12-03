@@ -1,16 +1,18 @@
 import Mathlib.Algebra.BigOperators.Ring
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Data.Nat.Choose.Basic
 import Library.Basic
 
 math2001_init
 
 open BigOperators
 
-
 theorem A.Q2 (n : ℕ) : ∑ i in Finset.range (n + 1), (2 * i) ^ 2 = (2 * n + 2).choose 3 := by
   cases n with
   | zero =>
+    -- show that sum to 0 and 2 choose 3 are both zero
     rw [@Finset.sum_range_add]
     rw [@Finset.sum_range_zero]
     rw [@Finset.sum_range_one]
@@ -31,112 +33,36 @@ theorem A.Q2 (n : ℕ) : ∑ i in Finset.range (n + 1), (2 * i) ^ 2 = (2 * n + 2
     rw [IH]
     rw [Nat.succ_add_eq_succ_add]
 
-    have succ_zero_eq_one : Nat.succ 0 = 1 := by rfl
-    have succ_eq_plus_one (n : ℕ) : Nat.succ n = n + 1 := by rfl
-
-    --left side
-    rw [show Nat.succ 0 = 1 by rfl]
-    rw[show Nat.succ k = k + 1 by rfl]
+    -- make it easier to read
+    rw [show (2 * (k + 1 + 1)) ^ 2 = (2 * k + 4) ^ 2 by rfl]
+    rw [show Nat.succ k = k + 1 by rfl]
+    rw [show 2 * (k + 1) + 2 = 2 * k + 4 by rfl]
     rw [show Nat.succ (k + 1) = k + 2 by rfl]
-    rw [Nat.choose_eq_descFactorial_div_factorial]
-    rw [show Nat.factorial 3 = 6 by rfl]
-    dsimp [Nat.descFactorial]
-    rw [show (2 * (k + 1 + 1)) ^ 2 = 4 * (k + 2) ^ 2 by ring]
-    rw [Nat.add_sub_cancel]
-    rw [@add_sq]
-    rw [Nat.add_succ_sub_one]
+    rw [show 2 * (k + 2) + 2 = 2 * k + 6 by rfl]
 
-    --right side
-    rw [Nat.choose_eq_descFactorial_div_factorial]
-    rw [show Nat.factorial 3 = 6 by rfl]
-    dsimp [Nat.descFactorial]
+    -- show that the goal is equivalent with a term of 2k + 4 choose 3 on both sides (then we show the other terms are equal)
+    rw [show Nat.choose (2 * k + 6) 3 = Nat.choose (2 * k + 5) 2 + Nat.choose (2 * k + 5) 3 by rw[Nat.choose_succ_succ]]
+    rw [show Nat.choose (2 * k + 5) 3 = Nat.choose (2 * k + 4) 2 + Nat.choose (2 * k + 4) 3 by rw[Nat.choose_succ_succ]]
 
-    rw [Nat.mul_one]
-    rw [Nat.mul_one]
-    rw [Nat.add_sub_cancel]
-    rw [Nat.add_succ_sub_one]
+    rw [← Nat.add_assoc]
 
-    have hd : 4 * (k ^ 2 + 2 * k * 2 + 2 ^ 2) = Nat.div (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)) 6 := by
-      let c:= k ^ 2 + 2 * k * 2 + 2 ^ 2
-      let n:= 4 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)
-      symm
-      apply Nat.div_eq_of_lt_le
-      calc
-        4 * c * 6 = (4 * 6) * c := by ring
-        _ ≤ 24 * c := by rw[]
-      calc
-        Nat.succ (4 * c) * 6 = (4 * c + 1) * 6 := by rfl
-        _ = 24 * c + 6 := by ring
-        _ > 24 * c := by addarith[]
+    -- expand the n choose 2 terms
+    rw [Nat.choose_two_right]
+    rw [Nat.choose_two_right]
 
-    rw [hd]
+    -- eliminate the denominator (left term)
+    rw [show (2 * k + 5) * (2 * k + 5 - 1) = (2 * k + 5) * (2 * k + 4) by rfl]
+    rw [show  (2 * k + 5) * (2 * k + 4) = 2 * (2 * k ^ 2 + 9 * k + 10) + 0 by ring]
+    rw [Nat.mul_add_div]
+    rw [Nat.zero_div]
 
+    -- eliminate the denominator (right term)
+    rw [show (2 * k + 4) * (2 * k + 4 - 1) = (2 * k + 4) * (2 * k + 3) by rfl]
+    rw [show  (2 * k + 4) * (2 * k + 3) = 2 * (2 * k ^ 2 + 7 * k + 6) + 0 by ring]
+    rw [Nat.mul_add_div]
+    rw [Nat.zero_div]
 
-
-
-    let c:= 2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2))
-
-    -- have hda : 2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2)) / 6 + Nat.div (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)) 6 = Nat.div (2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2)) + (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2))) 6 := by
-    --   help
-
-
-
-theorem mul_both (n b : ℕ) (h1: n = b) : 6 * n = 6 * b := by
-  rw[h1]
-
-theorem divis (n c : ℕ) (h1: n = 4 * c) : Nat.div (n * 6) 6 = n := by
-  rw [h1]
-  rw [show 4 * c * 6 = 24 * c by ring]
-  apply Nat.div_eq_of_lt_le
-  calc
-    4 * c * 6 = (4 * 6) * c := by ring
-    _ ≤ 24 * c := by rw[]
-  calc
-    Nat.succ (4 * c) * 6 = (4 * c + 1) * 6 := by rfl
-    _ = 24 * c + 6 := by ring
-    _ > 24 * c := by addarith[]
-
-
-
-
-theorem factorial_eq_succ_mul (n b : ℕ) : Nat.factorial (2 * Nat.succ (n) + b) = Nat.factorial (2 * (n + 1) + b - 1) * (2 * (n + 1) + b) := by
-    have succ_zero_eq_one : Nat.succ 0 = 1 := by rfl
-    have succ_eq_plus_one (n : ℕ) : Nat.succ n = n + 1 := by rfl
-    simple_induction n with k IH
-    . -- base case
-       dsimp [Nat.factorial]
-       rw [succ_zero_eq_one]
-       simple_induction b with k IH
-       . -- base case
-        dsimp [Nat.factorial]
-       . -- inductive step
-        rw [Nat.succ_add_sub_one]
-        dsimp [Nat.factorial]
-        rw[IH]
-        have : Nat.succ (2 * 1 + k) = 2 * 1 + (k + 1) := by rfl
-        rw[this]
-        rw [Nat.succ_add_sub_one]
-        have :=
-          calc
-          Nat.succ (1 + k) = (1 + k + 1) := by rfl
-          _ = 2 * 1 + k := by ring
-        rw[this]
-        ring
-    . -- inductive step
-       rw [succ_eq_plus_one]
-       rw [Nat.two_mul]
-
-       have : k + 1 + 1 + (k + 1 + 1) + b = k + 1 + 1 + 1 + b + (k + 1) := by ring
-       rw[this]
-
-       dsimp [Nat.factorial]
-       rw[Nat.add_succ_sub_one]
-       rw[Nat.succ_eq_one_add]
-
-       ring
-
-theorem factorial_eq_succ_mul' (n : ℕ): Nat.factorial (2 * Nat.succ (n)) = Nat.factorial (2 * (n + 1) - 1) * (2 * (n + 1)) := by
-    have : Nat.factorial (2 * Nat.succ (n)) = Nat.factorial (2 * Nat.succ (n) + 0) := by ring
-    rw [this]
-    rw [factorial_eq_succ_mul]
+    -- algebraic manipulation shows equality
     ring
+    numbers
+    numbers
