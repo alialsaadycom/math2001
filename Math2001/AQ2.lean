@@ -34,45 +34,69 @@ theorem A.Q2 (n : ℕ) : ∑ i in Finset.range (n + 1), (2 * i) ^ 2 = (2 * n + 2
     have succ_zero_eq_one : Nat.succ 0 = 1 := by rfl
     have succ_eq_plus_one (n : ℕ) : Nat.succ n = n + 1 := by rfl
 
-
+    --left side
     rw [show Nat.succ 0 = 1 by rfl]
     rw[show Nat.succ k = k + 1 by rfl]
     rw [show Nat.succ (k + 1) = k + 2 by rfl]
     rw [Nat.choose_eq_descFactorial_div_factorial]
     rw [show Nat.factorial 3 = 6 by rfl]
     dsimp [Nat.descFactorial]
-
     rw [show (2 * (k + 1 + 1)) ^ 2 = 4 * (k + 2) ^ 2 by ring]
     rw [Nat.add_sub_cancel]
     rw [@add_sq]
     rw [Nat.add_succ_sub_one]
-    rw?
+
+    --right side
+    rw [Nat.choose_eq_descFactorial_div_factorial]
+    rw [show Nat.factorial 3 = 6 by rfl]
+    dsimp [Nat.descFactorial]
+
+    rw [Nat.mul_one]
+    rw [Nat.mul_one]
+    rw [Nat.add_sub_cancel]
+    rw [Nat.add_succ_sub_one]
+
+    have hd : 4 * (k ^ 2 + 2 * k * 2 + 2 ^ 2) = Nat.div (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)) 6 := by
+      let c:= k ^ 2 + 2 * k * 2 + 2 ^ 2
+      let n:= 4 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)
+      symm
+      apply Nat.div_eq_of_lt_le
+      calc
+        4 * c * 6 = (4 * 6) * c := by ring
+        _ ≤ 24 * c := by rw[]
+      calc
+        Nat.succ (4 * c) * 6 = (4 * c + 1) * 6 := by rfl
+        _ = 24 * c + 6 := by ring
+        _ > 24 * c := by addarith[]
+
+    rw [hd]
 
 
-    -- rw [show Nat.factorial (2 * (k + 1) + 2 - 3) = Nat.factorial (2 * k + 1) by rfl]
 
 
-    -- dsimp [Nat.factorial]
-    -- rw [show Nat.succ (2 * (k + 1) + 1) = 2 * (k + 1) + 2 by rfl]
-    -- rw [show Nat.succ (2 * (k + 1)) = 2 * (k + 1) + 1 by rfl]
-    -- rw [show Nat.succ (2 * k + 1) = 2 * k + 2 by rfl]
-    -- rw [show Nat.succ (2 * k) = 2 * k + 1 by rfl]
+    let c:= 2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2))
 
-    -- rw [Nat.div_eq]
+    -- have hda : 2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2)) / 6 + Nat.div (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2)) 6 = Nat.div (2 * (k + 1) * ((2 * (k + 1) + 1) * (2 * (k + 1) + 2)) + (24 * (k ^ 2 + 2 * k * 2 + 2 ^ 2))) 6 := by
+    --   help
 
 
 
+theorem mul_both (n b : ℕ) (h1: n = b) : 6 * n = 6 * b := by
+  rw[h1]
+
+theorem divis (n c : ℕ) (h1: n = 4 * c) : Nat.div (n * 6) 6 = n := by
+  rw [h1]
+  rw [show 4 * c * 6 = 24 * c by ring]
+  apply Nat.div_eq_of_lt_le
+  calc
+    4 * c * 6 = (4 * 6) * c := by ring
+    _ ≤ 24 * c := by rw[]
+  calc
+    Nat.succ (4 * c) * 6 = (4 * c + 1) * 6 := by rfl
+    _ = 24 * c + 6 := by ring
+    _ > 24 * c := by addarith[]
 
 
-
-    sorry
-    -- but WHY???
-    -- have : 3 ≤ 2 * (k + 1) + 2 := by
-    --   calc
-    --   2 * (k + 1) + 2 ≥ 2 * (0 + 1) + 2 := by rel[Nat.zero_le k]
-    --   _ = 2 + 2 := by numbers
-    --   _ ≥ 3 := by numbers
-    -- apply this
 
 
 theorem factorial_eq_succ_mul (n b : ℕ) : Nat.factorial (2 * Nat.succ (n) + b) = Nat.factorial (2 * (n + 1) + b - 1) * (2 * (n + 1) + b) := by
